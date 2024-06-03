@@ -44,6 +44,13 @@ public class ParkingService {
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
+                
+                int ticketsCount = ticketDAO.getNbTicket(vehicleRegNumber);
+                if (ticketsCount > 0) {
+                    System.out.println("Happy to see you again ! As a regular user of\n" +
+                            "our parking, you will receive a 5% discount");
+                }
+                
                 ticketDAO.saveTicket(ticket);
                 System.out.println("Generated Ticket and saved in DB");
                 System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
@@ -103,7 +110,14 @@ public class ParkingService {
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             Date outTime = new Date();
             ticket.setOutTime(outTime);
-            fareCalculatorService.calculateFare(ticket);
+            
+            int ticketsCount = ticketDAO.getNbTicket(vehicleRegNumber);
+            if (ticketsCount > 1){
+                fareCalculatorService.calculateFare(ticket, true);
+            }else {
+                fareCalculatorService.calculateFare(ticket);
+            }
+
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
                 parkingSpot.setAvailable(true);
