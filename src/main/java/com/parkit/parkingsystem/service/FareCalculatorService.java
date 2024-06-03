@@ -16,6 +16,10 @@ public class FareCalculatorService {
 
         double duration = outHour - inHour;
         double durationInHour = duration / 3600000d;
+        
+        if (durationInHour <= 0.5){
+            ticket.setPrice(0);
+        } else {
 
               switch (ticket.getParkingSpot().getParkingType()) {
                 case CAR: {
@@ -31,4 +35,4 @@ public class FareCalculatorService {
             }
 
         }
-    }
+    }}
