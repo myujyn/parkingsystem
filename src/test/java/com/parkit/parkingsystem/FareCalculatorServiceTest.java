@@ -9,7 +9,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 import static org.junit.jupiter.api.Assertions.*;
+
 
 import java.util.Date;
 
@@ -182,5 +184,52 @@ public class FareCalculatorServiceTest {
 
         assertEquals(0.95 * Fare.BIKE_RATE_PER_HOUR, ticket.getPrice());
     }
+    @Test
+    public void calculateFare_ShouldCalculateFareForBike() {
+        // Given
+        FareCalculatorService fareCalculatorService = new FareCalculatorService();
+        Ticket ticket = new Ticket();
+        ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000))); // 1 hour ago
+        ticket.setOutTime(new Date());
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
+        ticket.setParkingSpot(parkingSpot);
 
+        // When
+        fareCalculatorService.calculateFare(ticket);
+
+        // Then
+        double expectedPrice = Fare.BIKE_RATE_PER_HOUR;
+        assertEquals(expectedPrice, ticket.getPrice());
+    }
+    @Test
+    public void calculateFare_ShouldCalculateFareForCar() {
+        // Given
+        FareCalculatorService fareCalculatorService = new FareCalculatorService();
+        Ticket ticket = new Ticket();
+        ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000))); // 1 hour ago
+        ticket.setOutTime(new Date());
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+        ticket.setParkingSpot(parkingSpot);
+
+        // When
+        fareCalculatorService.calculateFare(ticket);
+
+        // Then
+        double expectedPrice = Fare.CAR_RATE_PER_HOUR;
+        assertEquals(expectedPrice, ticket.getPrice());
+    }
+    
+    @Test
+    public void calculateFare_ThrowsExceptionForOutTimeBeforeInTime() {
+        // Arrange
+        FareCalculatorService fareCalculatorService = new FareCalculatorService();
+        Ticket ticket = new Ticket();
+        Date inTime = new Date();
+        Date outTime = new Date(inTime.getTime() - 1000); // Setting out time before in time
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
+    }
 }

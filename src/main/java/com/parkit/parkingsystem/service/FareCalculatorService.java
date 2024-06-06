@@ -32,6 +32,7 @@ public class FareCalculatorService {
                 }
                 case BIKE: {
                     ticket.setPrice(durationInHour * Fare.BIKE_RATE_PER_HOUR);
+                   
                     break;
                 }
                 default:
@@ -41,7 +42,7 @@ public class FareCalculatorService {
         }
         if (discount){
             ticket.setPrice(0.95 * ticket.getPrice());
-        }
+         }
       }
 	 }
      

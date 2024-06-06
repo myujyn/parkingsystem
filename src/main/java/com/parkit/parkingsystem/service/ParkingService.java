@@ -9,7 +9,10 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class ParkingService {
 
@@ -122,7 +125,12 @@ public class ParkingService {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
                 parkingSpot.setAvailable(true);
                 parkingSpotDAO.updateParking(parkingSpot);
-                System.out.println("Please pay the parking fare:" + ticket.getPrice());
+                
+                // Formater le prix en euros (€)
+                NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE);
+                String formattedPrice = currencyFormat.format(ticket.getPrice());
+                
+                System.out.printf( "Please pay the parking fare:" + formattedPrice);
                 System.out.println("Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
             }else{
                 System.out.println("Unable to update ticket information. Error occurred");
